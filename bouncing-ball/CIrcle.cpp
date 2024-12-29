@@ -3,34 +3,27 @@
 
 Circle::Circle(double x_, double y_, double r_)
 {
-	this->x = x_;
-	this->y = y_;
+	this->position = Vector2<double>{ x_, y_ };
 	this->radius = r_;
 
-	this->vx = 10;
-	this->vy = 0;
-}
-
-double
-dist(double x1, double y1, double x2, double y2)
-{
-	return fabs(sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)));
+	this->velocity = Vector2<double>{ 12, 0 };
 }
 
 void
 Circle::draw(SDL_Surface* surface)
 {
-	double lowX = this->x - this->radius;
-	double lowY = this->y - this->radius;
-	double highX = this->x + this->radius;
-	double highY = this->y + this->radius;
+	double lowX = this->position.x - this->radius;
+	double lowY = this->position.y - this->radius;
+	double highX = this->position.x + this->radius;
+	double highY = this->position.y + this->radius;
 
 	for (double x = lowX; x <= highX; x++)
 	{
 		for (double y = lowY; y < highY; y++)
 		{
 			SDL_Rect pixel = { int(x), int(y), 1, 1};
-			if (dist(x, y, this->x, this->y) < this->radius)
+			double distance = fabs(sqrt(pow(x - this->position.x, 2) + pow(y - this->position.y, 2))); /* the distance of the point from the center of the circle. */
+			if (distance < this->radius)
 				SDL_FillRect(surface, &pixel, 0xffffffff);
 		}
 	}
@@ -42,8 +35,8 @@ Circle::update(int sw, int sh)
 	this->gravity();
 
 	/* updating position with velocity */
-	this->x += this->vx;
-	this->y += this->vy;
+	this->position.x += this->velocity.x;
+	this->position.y += this->velocity.y;
 
 	this->wallCollisions(sw, sh);
 }
@@ -51,34 +44,38 @@ Circle::update(int sw, int sh)
 void
 Circle::gravity()
 {
-	this->vy += 1;
+	this->velocity.y += 1;
 }
 
 void
 Circle::wallCollisions(int screenWidth, int screenHeight)
 {
+	bool collideLeft = this->position.x - this->radius < 0;
+	bool collideRight = this->position.x + this->radius > screenWidth;
+	bool collideUp = this->position.y - this->radius < 0;
+	bool collideDown = this->position.y + this->radius > screenHeight;
 	// left wall
-	if (this->x - this->radius < 0)
+	if (collideLeft)
 	{
-		this->x = this->radius;
+		this->position.x = this->radius;
 		bounceX();
 	}
 	// right wall
-	if (this->x + this->radius > screenWidth)
+	if (collideRight)
 	{
-		this->x = screenWidth - this->radius;
+		this->position.x = screenWidth - this->radius;
 		bounceX();
 	}
 	// bottom wall
-	if (this->y + this->radius > screenHeight)
+	if (collideDown)
 	{
-		this->y = screenHeight - this->radius;
+		this->position.y = screenHeight - this->radius;
 		bounceY();
 	}
 	// upper wall
-	if (this->y - this->radius < 0)
+	if (collideUp)
 	{
-		this->y = this->radius;
+		this->position.y = this->radius;
 		bounceY();
 	}
 }
@@ -86,11 +83,11 @@ Circle::wallCollisions(int screenWidth, int screenHeight)
 void
 Circle::bounceX()
 {
-	this->vx *= -1;
+	this->velocity.x *= -1;
 }
 
 void
 Circle::bounceY()
 {
-	this->vy *= -1;
+	this->velocity.y *= -1;
 }

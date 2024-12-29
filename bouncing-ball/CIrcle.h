@@ -1,13 +1,14 @@
 #pragma once
 #include "SDL.h"
+#include "Vector2.h"
 
 class Circle
 {
 private:
 	double radius;
-	double x, y; // the x and y-value of the center of the circle
+	Vector2 <double> position; // the position of the center of the circle
 
-	double vx, vy;  // the x and y velocities of the circle
+	Vector2 <double> velocity; // the velocity of the circle
 public:
 	Circle(double, double, double);
 
