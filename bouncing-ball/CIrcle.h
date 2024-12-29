@@ -1,9 +1,15 @@
 #pragma once
-class CIrcle
+#include "SDL.h"
+
+class Circle
 {
 private:
-	int radius;
-	int x;
-	int y;
+	double radius;
+	double x; // the x-value of the center of the circle
+	double y; // the y-value of the center of the circle
+public:
+	Circle(double, double, double);
+
+	void draw(SDL_Surface*);
 };
 
