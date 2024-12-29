@@ -5,6 +5,7 @@
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 600
+#define FRAME_RATE 60
 
 int
 main (int argc, char *args[])
@@ -17,7 +18,7 @@ main (int argc, char *args[])
 		"Bouncing ball", 
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
 		SCREEN_WIDTH, SCREEN_HEIGHT, 
-		NULL);
+		SDL_WINDOW_BORDERLESS);
 	if (!window) {
 		printf("Failed to create window!\nSDL Error: '%s'\n", SDL_GetError());
 		return 1;
@@ -46,19 +47,27 @@ main (int argc, char *args[])
 				running = false;
 				break;
 
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+				{
+					running = false;
+					break;
+				}
+
 			default:
 				break;
 			}
 		}
 
-//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-//		SDL_RenderClear(renderer);
-
 		// other renderings here
+		SDL_Rect background = SDL_Rect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+		SDL_FillRect(surface, &background, 0x00000000);
+		circle.update(SCREEN_WIDTH, SCREEN_HEIGHT);
 		circle.draw(surface);
 		SDL_UpdateWindowSurface(window);
 
-//		SDL_RenderPresent(renderer);
+		/* frame_rate */
+		SDL_Delay(1000 / FRAME_RATE);
 	}
 	return 0;
 }

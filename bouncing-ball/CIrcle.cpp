@@ -6,6 +6,9 @@ Circle::Circle(double x_, double y_, double r_)
 	this->x = x_;
 	this->y = y_;
 	this->radius = r_;
+
+	this->vx = 10;
+	this->vy = 0;
 }
 
 double
@@ -31,4 +34,63 @@ Circle::draw(SDL_Surface* surface)
 				SDL_FillRect(surface, &pixel, 0xffffffff);
 		}
 	}
+}
+
+void
+Circle::update(int sw, int sh)
+{
+	this->gravity();
+
+	/* updating position with velocity */
+	this->x += this->vx;
+	this->y += this->vy;
+
+	this->wallCollisions(sw, sh);
+}
+
+void
+Circle::gravity()
+{
+	this->vy += 1;
+}
+
+void
+Circle::wallCollisions(int screenWidth, int screenHeight)
+{
+	// left wall
+	if (this->x - this->radius < 0)
+	{
+		this->x = this->radius;
+		bounceX();
+	}
+	// right wall
+	if (this->x + this->radius > screenWidth)
+	{
+		this->x = screenWidth - this->radius;
+		bounceX();
+	}
+	// bottom wall
+	if (this->y + this->radius > screenHeight)
+	{
+		this->y = screenHeight - this->radius;
+		bounceY();
+	}
+	// upper wall
+	if (this->y - this->radius < 0)
+	{
+		this->y = this->radius;
+		bounceY();
+	}
+}
+
+void
+Circle::bounceX()
+{
+	this->vx *= -1;
+}
+
+void
+Circle::bounceY()
+{
+	this->vy *= -1;
 }
