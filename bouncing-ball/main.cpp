@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <SDL.h>
 
+#include "Circle.h"
+
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 600
 
@@ -21,12 +23,21 @@ main (int argc, char *args[])
 		return 1;
 	}
 
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, NULL);
-	if (!renderer) {
-		printf("Failed to initialize renderer!\nSDL Error: '%s'\n", SDL_GetError());
+//	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, NULL);
+//	if (!renderer) {
+//		printf("Failed to create renderer!\nSDL Error: '%s'\n", SDL_GetError());
+//	}
+
+	SDL_Surface* surface = SDL_GetWindowSurface(window);
+	if (!surface) {
+		printf("Failed to get surface!\nSDL Error: '%s'\n", SDL_GetError());
 	}
 
+	/* SETUP */
 	bool running = true;
+	Circle circle = Circle(450, 300, 50);
+
+	/* EVERY FRAME */
 	while (running) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -40,12 +51,14 @@ main (int argc, char *args[])
 			}
 		}
 
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
+//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+//		SDL_RenderClear(renderer);
 
 		// other renderings here
+		circle.draw(surface);
+		SDL_UpdateWindowSurface(window);
 
-		SDL_RenderPresent(renderer);
+//		SDL_RenderPresent(renderer);
 	}
 	return 0;
 }
