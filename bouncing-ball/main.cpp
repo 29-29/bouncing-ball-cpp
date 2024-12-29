@@ -7,6 +7,8 @@
 #define SCREEN_HEIGHT 600
 #define FRAME_RATE 60
 
+#define COLOR_BACKGROUND 0x0f0f0f0f
+
 int
 main (int argc, char *args[])
 {
@@ -61,7 +63,7 @@ main (int argc, char *args[])
 
 		// other renderings here
 		SDL_Rect background = SDL_Rect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-		SDL_FillRect(surface, &background, 0x00000000);
+		SDL_FillRect(surface, &background, COLOR_BACKGROUND);
 		circle.update(SCREEN_WIDTH, SCREEN_HEIGHT);
 		circle.draw(surface);
 		SDL_UpdateWindowSurface(window);
